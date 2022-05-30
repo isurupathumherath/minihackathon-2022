@@ -1,46 +1,53 @@
-# name: minihackathon 2022 Website Development CI/CD
+name: minihackathon 2022 Website Development CI/CD
 
-# on:
-#   push:
-#     branches: [development]
-# permissions: 
-#   contents: write
+on:
+  push:
+    branches: [development]
+permissions: 
+  contents: write
     
-# jobs:
-#   build:
-#     concurrency: ci-${{ github.ref }}
-#     runs-on: ubuntu-latest
-#     environment: Development
+jobs:
+  build:
+    concurrency: ci-${{ github.ref }}
+    runs-on: ubuntu-latest
+    environment: Development
     
-#     strategy:
-#       matrix:
-#         node-version: [14.x]
+    strategy:
+      matrix:
+        node-version: [14.x]
         
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@v2.4.0
-#       - name: Setup Node.js environment
-#         uses: actions/setup-node@v2.5.0
-#         with:
-#           node-version: ${{ matrix.node-version }}
-#       - run: npm install -g yarn
-#       - name: yarn install
-#         run: yarn install
-#       - name: yarn build
-#         env: 
-#           REACT_APP_FIREBASE_API_KEY: ${{ secrets.REACT_APP_FIREBASE_API_KEY }}
-#           REACT_APP_AUTH_DOMAIN: ${{ secrets.REACT_APP_AUTH_DOMAIN }}
-#           REACT_APP_PROJECT_ID: ${{ secrets.REACT_APP_PROJECT_ID }}
-#           REACT_APP_STORAGE_BUCKET: ${{ secrets.REACT_APP_STORAGE_BUCKET }}
-#           REACT_APP_MESSAGING_SENDER_ID: ${{ secrets.REACT_APP_MESSAGING_SENDER_ID }}
-#           REACT_APP_APP_ID=: ${{ secrets.REACT_APP_APP_ID }}
-#           REACT_APP_MEASUREMENT_ID: ${{ secrets.REACT_APP_MEASUREMENT_ID }}
-#         run: yarn build
-#       - name: Upload a Build Artifact
-#         uses: actions/upload-artifact@v2.3.0
-#         with:
-#           name: build
-#           path: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.4.0
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.5.0
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm install -g yarn
+      - name: yarn install
+        run: yarn install
+      - name: yarn build
+        env: 
+          REACT_APP_FIREBASE_API_KEY: ${{ secrets.REACT_APP_FIREBASE_API_KEY }}
+          REACT_APP_AUTH_DOMAIN: ${{ secrets.REACT_APP_AUTH_DOMAIN }}
+          REACT_APP_PROJECT_ID: ${{ secrets.REACT_APP_PROJECT_ID }}
+          REACT_APP_STORAGE_BUCKET: ${{ secrets.REACT_APP_STORAGE_BUCKET }}
+          REACT_APP_MESSAGING_SENDER_ID: ${{ secrets.REACT_APP_MESSAGING_SENDER_ID }}
+          REACT_APP_APP_ID=: ${{ secrets.REACT_APP_APP_ID }}
+          REACT_APP_MEASUREMENT_ID: ${{ secrets.REACT_APP_MEASUREMENT_ID }}
+        run: yarn build
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v2.3.0
+        with:
+          name: build
+          path: build
+      - name: Deploy
+        uses: crazy-max/ghaction-github-pages@v1
+        with:
+          target_branch: gh-pages
+          build_dir: build
+        env:
+          GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
 #   deploy:
 #     name: Deploy
 #     needs: build
@@ -60,28 +67,28 @@
 #           folder: build # The folder the action should deploy.
           
           
-name: Node.js CI
-on:
-  push:
-    branches: [development]
+# name: Node.js CI
+# on:
+#   push:
+#     branches: [development]
 
-jobs:
-  build-test-deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Set-up Node
-        uses: actions/setup-node@v1
-        with:
-          node-version: "10.x"
-      - run: npm install
-      - run: npm run build
-      - run: npm test
-      - name: Deploy
-        uses: crazy-max/ghaction-github-pages@v1
-        with:
-          target_branch: gh-pages
-          build_dir: build
-        env:
-          GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
+# jobs:
+#   build-test-deploy:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v2
+#       - name: Set-up Node
+#         uses: actions/setup-node@v1
+#         with:
+#           node-version: "10.x"
+#       - run: npm install
+#       - run: npm run build
+#       - run: npm test
+#       - name: Deploy
+#         uses: crazy-max/ghaction-github-pages@v1
+#         with:
+#           target_branch: gh-pages
+#           build_dir: build
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
