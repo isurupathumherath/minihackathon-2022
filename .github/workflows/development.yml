@@ -36,18 +36,17 @@ jobs:
           REACT_APP_APP_ID=: ${{ secrets.REACT_APP_APP_ID }}
           REACT_APP_MEASUREMENT_ID: ${{ secrets.REACT_APP_MEASUREMENT_ID }}
         run: yarn build
-      - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v2.3.0
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4.3.3
         with:
-          name: build
-          path: build
-      - name: Deploy
-        uses: crazy-max/ghaction-github-pages@v1
-        with:
-          target_branch: gh-pages
-          build_dir: build
-        env:
-          GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
+          branch: gh-pages # The branch the action should deploy to.
+          folder: build # The folder the action should deploy.
+#       - name: Upload a Build Artifact
+#         uses: actions/upload-artifact@v2.3.0
+#         with:
+#           name: build
+#           path: build
+      
 #   deploy:
 #     name: Deploy
 #     needs: build
