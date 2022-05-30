@@ -3,9 +3,12 @@ name: minihackathon 2022 Website Development CI/CD
 on:
   push:
     branches: [development]
+permissions: 
+  contents: write
     
 jobs:
   build:
+    concurrency: ci-${{ github.ref }}
     runs-on: ubuntu-latest
     environment: Development
     
@@ -38,27 +41,21 @@ jobs:
         with:
           name: build
           path: build
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.4.0
+      - name: Download a Build Artifact
+        uses: actions/download-artifact@v2.1.0
+        with:
+          name: build
+          path: build
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4.3.3
         with:
           branch: gh-pages # The branch the action should deploy to.
           folder: build # The folder the action should deploy.
-#   deploy:
-#     name: Deploy
-#     needs: build
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@v2.4.0
-#       - name: Download a Build Artifact
-#         uses: actions/download-artifact@v2.1.0
-#         with:
-#           name: build
-#           path: build
-#       - name: GitHub Action for Firebase
-#         uses: w9jds/firebase-action@v2.0.0
-#         with:
-#           args: deploy --only hosting --project development
-#         env:
-#           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           
